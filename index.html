@@ -1,137 +1,289 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Hermes Petdex</title>
+<title>Hermes Petdex — the archive</title>
+<meta name="description" content="A curated museum of 4,824 animated pets for Hermes Agent. Discover by universe, style and type. Explore, compare, install.">
+<meta property="og:title" content="Hermes Petdex — the archive">
+<meta property="og:description" content="4,824 pets for Hermes Agent, curated as a luxury archive. Find by what they are.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Space+Grotesk:wght@300..700&family=Syne:wght@400..800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#05060a;--cyan:#00D4FF;--purple:#8B5CF6;--white:#fff;--gray:#4A4A4A;--card:#0d1020}
+/* ============ TOKENS ============ */
+:root{
+  --bg0:#0A0A0B; --bg1:#121214; --card:#1A1A1E; --card2:#202024;
+  --border:#2A2A2E; --border-hi:#3a3a40;
+  --text:#F2F2F0; --text-dim:#9a9aa2; --text-faint:#62626a;
+  --lime:#D6FF57; --orange:#FF4D00;
+  --serif:'Fraunces',Georgia,serif;
+  --sans:'Space Grotesk',system-ui,sans-serif;
+  --display:'Syne',sans-serif;
+  --glow:0 0 0 1px rgba(214,255,87,.12),0 10px 40px -10px rgba(214,255,87,.18);
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:radial-gradient(1200px 600px at 70% -10%,#12082e 0%,var(--bg) 55%);color:var(--white);font-family:'Space Grotesk','Inter',system-ui,sans-serif;min-height:100vh}
-.wrap{max-width:1200px;margin:0 auto;padding:28px 20px 60px}
-header{margin-bottom:22px}
-.logo{font-size:26px;font-weight:800;letter-spacing:1px}
-.logo .cyan{color:var(--cyan)}.logo .purp{color:var(--purple)}
-.sub{color:#99a;font-size:14px;margin-top:4px;max-width:680px}
-.count{display:inline-block;background:rgba(139,92,246,.15);border:1px solid var(--purple);color:var(--cyan);padding:2px 12px;border-radius:20px;font-size:13px;margin-left:10px;vertical-align:middle}
-.filters{background:rgba(13,16,32,.7);border:1px solid #2a2f4a;border-radius:16px;padding:16px 18px;margin-bottom:24px;backdrop-filter:blur(6px)}
-.fgroup{margin-bottom:12px}
-.fgroup label{display:block;font-size:11px;letter-spacing:1.5px;color:var(--cyan);font-weight:700;margin-bottom:6px;text-transform:uppercase}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{background:#151a33;border:1px solid #2a2f4a;color:#cdd;padding:4px 11px;border-radius:20px;font-size:12px;cursor:pointer;transition:.15s;user-select:none}
-.chip:hover{border-color:var(--cyan)}
-.chip.active{background:var(--cyan);color:#000;border-color:var(--cyan);font-weight:700}
-.search{display:flex;gap:8px;margin-bottom:6px}
-.search input{flex:1;background:#151a33;border:1px solid #2a2f4a;color:#fff;padding:8px 12px;border-radius:10px;font-size:14px;outline:none}
-.search input:focus{border-color:var(--cyan)}
-.sortbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.sortbar .res{color:#99a;font-size:13px}
-.sortbar .sortbtn{background:#151a33;border:1px solid #2a2f4a;color:#cdd;padding:5px 12px;border-radius:8px;font-size:12px;cursor:pointer}
-.sortbar .sortbtn:hover{border-color:var(--cyan)}
-.sortbar .sortbtn.active{background:var(--purple);color:#fff;border-color:var(--purple)}
-.clear{margin-top:8px;color:var(--cyan);background:none;border:none;cursor:pointer;font-size:12px;text-decoration:underline}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
-.card{background:var(--card);border:1px solid #232844;border-radius:12px;padding:9px;cursor:pointer;transition:.18s;text-align:center;position:relative}
-.card:hover{transform:translateY(-4px);border-color:var(--cyan);box-shadow:0 8px 24px rgba(0,212,255,.15)}
-.card .art{width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;background:#000;border-radius:9px;overflow:hidden}
-.card img{max-width:90%;max-height:90%;object-fit:contain}
+html{scroll-behavior:smooth}
+body{background:var(--bg0);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased}
+/* grain overlay */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:2000;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+::selection{background:var(--lime);color:#000}
+.wrap{max-width:1280px;margin:0 auto;padding:0 26px}
+
+/* ============ HERO (title) ============ */
+.hero{padding:70px 0 30px;position:relative}
+.kicker{font-family:var(--display);font-size:12px;letter-spacing:6px;text-transform:uppercase;color:var(--lime);margin-bottom:22px}
+.title{font-family:var(--serif);font-weight:500;font-size:clamp(52px,9vw,118px);line-height:.92;letter-spacing:.01em}
+.title em{font-style:italic;color:var(--lime);font-weight:400}
+.sub{margin-top:26px;max-width:560px;color:var(--text-dim);font-size:17px;line-height:1.6}
+.sub b{color:var(--text);font-weight:500}
+
+/* ============ PET OF THE DAY hero ============ */
+.potd{margin:36px 0 26px;background:linear-gradient(135deg,#151519,#101013);border:1px solid var(--border);
+  border-radius:24px;overflow:hidden;position:relative;min-height:320px;display:flex}
+.potd::before{content:"";position:absolute;inset:0;
+  background:radial-gradient(600px 300px at 85% 20%,rgba(214,255,87,.07),transparent 60%);
+  pointer-events:none}
+.potd-info{padding:42px 40px;flex:1;display:flex;flex-direction:column;justify-content:center;z-index:1}
+.potd-label{font-family:var(--display);font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--text-faint);margin-bottom:14px}
+.potd-label .dot{color:var(--lime);margin-right:8px}
+.potd-name{font-family:var(--serif);font-size:clamp(34px,5vw,56px);line-height:1.02;font-weight:500}
+.potd-name em{color:var(--lime);font-style:italic}
+.potd-desc{margin-top:14px;color:var(--text-dim);font-size:15px;line-height:1.6;max-width:520px}
+.potd-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.pill-mini{font-family:var(--display);font-size:11px;padding:5px 12px;border-radius:100px;border:1px solid var(--border);color:var(--text-dim);letter-spacing:.5px}
+.potd-art{width:340px;min-height:320px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+.potd-art img{width:230px;height:230px;object-fit:contain;filter:drop-shadow(0 0 40px rgba(214,255,87,.25));z-index:1}
+.potd-art .ring{position:absolute;width:290px;height:290px;border-radius:50%;border:1px solid var(--border-hi)}
+.potd-art .ring.r2{width:350px;height:350px;opacity:.5}
+.potd-install{margin-top:22px;align-self:flex-start;display:inline-flex;align-items:center;gap:10px;
+  background:var(--lime);color:#000;font-weight:600;border:none;padding:12px 22px;border-radius:12px;
+  font-size:14px;cursor:pointer;transition:.2s}
+.potd-install:hover{transform:translateY(-2px);box-shadow:0 10px 30px -8px rgba(214,255,87,.5)}
+
+/* ============ STICKY FILTER BAR ============ */
+.stickybar{position:sticky;top:0;z-index:100;padding:14px 0;backdrop-filter:blur(20px) saturate(1.4);
+  -webkit-backdrop-filter:blur(20px);background:rgba(10,10,11,.72);border-bottom:1px solid rgba(255,255,255,.04);margin:0 -26px;padding-left:26px;padding-right:26px}
+.filters-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.searchbox{flex:1;min-width:220px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);
+  border:1px solid var(--border);border-radius:100px;padding:10px 18px;transition:.2s}
+.searchbox:focus-within{border-color:var(--lime);box-shadow:0 0 0 3px rgba(214,255,87,.08)}
+.searchbox svg{width:15px;height:15px;stroke:var(--text-faint);flex-shrink:0}
+.searchbox input{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:14px;font-family:var(--sans)}
+.searchbox input::placeholder{color:var(--text-faint)}
+.resultcount{font-family:var(--display);font-size:13px;color:var(--text-dim);white-space:nowrap}
+.resultcount b{color:var(--lime)}
+.fgroup{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.fgroup label{display:none}
+.chip{font-family:var(--display);font-size:12px;letter-spacing:.3px;padding:7px 15px;border-radius:100px;
+  border:1px solid var(--border);background:rgba(255,255,255,.02);color:var(--text-dim);cursor:pointer;
+  transition:all .18s cubic-bezier(.2,.8,.2,1);user-select:none}
+.chip:hover{border-color:var(--border-hi);color:var(--text);transform:translateY(-1px)}
+.chip.active{background:var(--lime);border-color:var(--lime);color:#000;font-weight:600;transform:scale(1.03)}
+.sortrow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;flex-wrap:wrap}
+.sortbtns{display:flex;gap:6px}
+.sbtn{font-family:var(--display);font-size:12px;padding:6px 14px;border-radius:100px;border:1px solid transparent;
+  background:none;color:var(--text-faint);cursor:pointer;transition:.15s;letter-spacing:.3px}
+.sbtn:hover{color:var(--text)}
+.sbtn.active{color:var(--lime);border-color:rgba(214,255,87,.3);background:rgba(214,255,87,.06)}
+.clear{background:none;border:none;color:var(--text-faint);font-size:12px;cursor:pointer;text-decoration:underline;font-family:var(--sans)}
+.clear:hover{color:var(--text)}
+
+/* ============ BENTO GRID ============ */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;margin:22px 0 40px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:10px;cursor:pointer;
+  transition:all .22s cubic-bezier(.2,.8,.2,1);position:relative;overflow:hidden}
+.card:hover{transform:translateY(-5px);border-color:var(--border-hi);box-shadow:var(--glow)}
+.card .art{width:100%;aspect-ratio:1/1;border-radius:13px;background:#0f0f12;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card img{max-width:88%;max-height:88%;object-fit:contain;transition:transform .3s}
+.card:hover img{transform:scale(1.06)}
 .card img.pix{image-rendering:pixelated}
-.card .art.ph{background:linear-gradient(135deg,#0d1330,#05060a);color:#556;font-size:28px;display:flex;align-items:center;justify-content:center}
-.card .nm{font-size:11px;font-weight:600;margin-top:6px;color:#eef;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card .ct{font-size:9px;color:#889;margin-top:2px;text-transform:capitalize}
-.card .uq{position:absolute;top:5px;left:5px;font-size:7px;background:rgba(139,92,246,.2);color:#dcc6ff;padding:1px 5px;border-radius:7px;text-transform:uppercase;letter-spacing:.4px}
-.loadmore{grid-column:1/-1;text-align:center;padding:18px}
-.loadmore button{background:#151a33;border:1px solid var(--cyan);color:var(--cyan);padding:11px 28px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:.15s}
-.loadmore button:hover{background:rgba(0,212,255,.12)}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:50}
-.overlay.open{display:flex}
-.modal{background:#0a0d1c;border:1px solid var(--purple);border-radius:22px;max-width:500px;width:92%;overflow:hidden;box-shadow:0 0 60px rgba(139,92,246,.35);animation:pop .18s ease}
-@keyframes pop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
-.modal-head{background:linear-gradient(135deg,#1a0b3a,#0a0d1c);padding:14px 22px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #2a2f4a}
-.modal-head h2{font-size:19px}
-.modal-head .close{cursor:pointer;background:#151a33;border:none;color:#fff;font-size:18px;width:30px;height:30px;border-radius:50%;line-height:1}
-.modal-head .close:hover{background:#2a2f4a}
-.stage{height:230px;background:radial-gradient(500px 220px at 50% 0%,#0d1330 0%,#000 70%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.stage img{max-height:170px;max-width:90%;object-fit:contain}
+.card .meta{padding:9px 3px 3px}
+.card .nm{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .row{display:flex;align-items:center;justify-content:space-between;margin-top:5px;gap:6px}
+.card .ct{font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.6px}
+.utag{font-family:var(--display);font-size:9px;letter-spacing:.4px;padding:2px 8px;border-radius:100px;text-transform:uppercase;white-space:nowrap}
+.utag.pix-tag{background:rgba(214,255,87,.14);color:var(--lime)}
+.empty{grid-column:1/-1;text-align:center;padding:70px 20px;color:var(--text-dim)}
+.empty .big{font-family:var(--serif);font-style:italic;font-size:34px;color:var(--text);margin-bottom:10px}
+.loadwrap{grid-column:1/-1;text-align:center;padding:20px}
+.loadbtn{background:transparent;border:1px solid var(--border-hi);color:var(--text);font-family:var(--display);
+  font-size:13px;padding:13px 34px;border-radius:100px;cursor:pointer;transition:.2s;letter-spacing:.5px}
+.loadbtn:hover{border-color:var(--lime);color:var(--lime)}
+.loadbtn .n{color:var(--lime)}
+
+/* skeleton */
+.skel{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;margin:22px 0}
+.skel .s{background:var(--card);border-radius:18px;padding:10px;border:1px solid var(--border);overflow:hidden}
+.skel .s .b{background:linear-gradient(90deg,#18181b,#222226,#18181b);background-size:200% 100%;animation:sh 1.3s infinite;border-radius:13px}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel .s .sq{aspect-ratio:1/1}
+.skel .s .ln{height:12px;margin-top:8px;width:70%}
+.skel .s .ln2{height:9px;margin-top:6px;width:45%}
+
+/* ============ MODAL ============ */
+.overlay{position:fixed;inset:0;background:rgba(5,5,6,.8);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:500;padding:20px}
+.overlay.open{display:flex;animation:fade .2s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal{background:var(--bg1);border:1px solid var(--border-hi);border-radius:24px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;animation:pop .25s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{from{transform:scale(.95) translateY(10px);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-head{display:flex;align-items:flex-start;justify-content:space-between;padding:22px 24px 0}
+.modal-head h2{font-family:var(--serif);font-weight:500;font-size:30px;line-height:1.05}
+.modal-head h2 em{color:var(--lime);font-style:italic}
+.close{background:var(--card2);border:1px solid var(--border);color:var(--text-dim);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:16px;transition:.15s;flex-shrink:0}
+.close:hover{color:#fff;border-color:var(--border-hi)}
+.stage{margin:16px 24px;border-radius:16px;background:radial-gradient(400px 200px at 50% 0%,#1c1c22,#0f0f12);min-height:260px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.stage img{max-height:210px;max-width:85%;object-fit:contain}
 .stage img.pix{image-rendering:pixelated}
-.stage-tag{position:absolute;top:12px;left:14px;font-size:10px;color:var(--cyan);background:rgba(0,212,255,.12);padding:2px 10px;border-radius:10px;letter-spacing:1.5px}
-.modal-body{padding:18px 22px}
-.m-cat{font-size:11px;color:var(--cyan);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
-.desc{font-size:13px;color:#bbc;line-height:1.55;min-height:38px}
-.desc-real{font-size:13px;color:#cdd;line-height:1.5;margin-top:10px;font-style:italic}
-.tagrow{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
-.tagrow .tag{background:#151a33;border:1px solid #2a2f4a;color:#cdd;padding:3px 9px;border-radius:14px;font-size:11px}
-.tagrow .tag.uni{border-color:var(--purple);color:#dcc6ff}
-.install{display:block;width:100%;text-align:center;background:linear-gradient(90deg,var(--cyan),#5a6bff);color:#000;border:none;padding:13px;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;margin-top:6px;transition:.15s}
-.install:hover{opacity:.9}
-.install code{background:rgba(0,0,0,.35);color:#fff;padding:2px 7px;border-radius:6px;font-size:12px}
-.install.copied{background:linear-gradient(90deg,#00d49a,#00D4FF)}
-.empty{grid-column:1/-1;text-align:center;color:#889;padding:50px;font-size:15px}
-.footer{text-align:center;color:#667;font-size:12px;margin-top:40px;padding-top:18px;border-top:1px solid #1a1f35}
+.stage-tag{position:absolute;top:12px;left:14px;font-family:var(--display);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text-faint)}
+.mbody{padding:0 24px 24px}
+.m-cat{font-family:var(--display);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-faint)}
+.tagrow{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}
+.tag{font-family:var(--display);font-size:11px;padding:4px 11px;border-radius:100px;border:1px solid var(--border);color:var(--text-dim)}
+.tag.uni{border-color:rgba(214,255,87,.3);color:var(--lime)}
+.m-desc-real{font-size:14px;color:var(--text-dim);line-height:1.6;font-family:var(--serif);font-style:italic;margin-bottom:8px}
+.author-line{font-size:12px;color:var(--text-faint);margin-bottom:14px}
+.install{display:block;width:100%;background:var(--lime);color:#000;border:none;padding:15px;border-radius:14px;
+  font-family:var(--display);font-size:15px;font-weight:600;cursor:pointer;transition:.15s;letter-spacing:.3px}
+.install:hover{box-shadow:0 10px 30px -8px rgba(214,255,87,.5);transform:translateY(-1px)}
+.install.copied{background:#0f0;color:#000}
+.install code{background:rgba(0,0,0,.12);padding:2px 8px;border-radius:6px;font-family:var(--sans);font-size:13px}
+
+/* similar row */
+.similar{margin-top:20px}
+.similar h3{font-family:var(--serif);font-style:italic;font-size:18px;margin-bottom:10px;color:var(--text-dim)}
+.simrow{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px}
+.sim{width:74px;flex-shrink:0;cursor:pointer;text-align:center}
+.sim .sa{width:74px;height:74px;border-radius:12px;background:#0f0f12;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.sim img{max-width:80%;max-height:80%;object-fit:contain}
+.sim img.pix{image-rendering:pixelated}
+.sim .sn{font-size:9px;color:var(--text-faint);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ============ FOOTER ============ */
+.footer{text-align:center;color:var(--text-faint);font-size:12px;padding:50px 0 40px;border-top:1px solid var(--border);margin-top:20px;font-family:var(--sans)}
+.footer .h{font-family:var(--serif);font-style:italic;font-size:22px;color:var(--text-dim);margin-bottom:8px}
+
+/* custom cursor */
+.cursor{position:fixed;width:9px;height:9px;border-radius:50%;background:var(--lime);pointer-events:none;z-index:3000;
+  transform:translate(-50%,-50%);transition:width .15s,height .15s,opacity .15s;opacity:0;mix-blend-mode:difference}
+@media (hover:hover) and (pointer:fine){.cursor{display:block}}
+@media (max-width:760px){.potd{flex-direction:column}.potd-art{width:100%;min-height:200px}.title{font-size:56px}.potd-art img{width:160px;height:160px}}
 </style>
 </head>
 <body>
+<div class="cursor" id="cur"></div>
+
 <div class="wrap">
-<header>
-  <div class="logo">HERMES <span class="cyan">PET</span><span class="purp">DEX</span><span class="count" id="ct">4824</span></div>
-  <div class="sub">Descubre mascotas de Hermes por lo que <b>son</b>: universo, estilo y tipo. Explora, compara e instala con un click.</div>
-</header>
+  <!-- HERO -->
+  <header class="hero">
+    <div class="kicker">A Curated Archive · Petdex Gallery</div>
+    <h1 class="title">Hermes <em>Petdex</em></h1>
+    <p class="sub">A museum of <b>4,824 animated pets</b> for Hermes Agent. Not a dump — a <b>semantic archive</b>: find by universe, style and type. Explore, compare, install in one click.</p>
+  </header>
 
-<div class="filters">
-  <div class="fgroup search"><input id="q" type="text" placeholder="Buscar por nombre, universo, descripción…  ej: pokemon, mecha girl, cozy dragon"></div>
-  <div class="fgroup"><label>Categoría</label><div class="chips" id="f-cat"></div></div>
-  <div class="fgroup"><label>Universo / franquicia</label><div class="chips" id="f-univ"></div></div>
-  <div class="fgroup"><label>Origen</label><div class="chips" id="f-orig"></div></div>
-  <div class="fgroup"><label>Estilo visual</label><div class="chips" id="f-style"></div></div>
-  <div class="fgroup"><label>Tipo</label><div class="chips" id="f-cre"></div></div>
-  <button class="clear" id="clr">limpiar filtros</button>
-</div>
-
-<div class="sortbar">
-  <span class="res" id="res"></span>
-  <button class="sortbtn" id="sort-feat">Reconocibles primero</button>
-  <button class="sortbtn" id="sort-shuffle">Sorpréndeme 🎲</button>
-</div>
-
-<div class="grid" id="grid"></div>
-
-<div class="footer">Hermes Petdex · 4,824 mascotas del gallery petdex.dev · curaduría + etiquetado semántico</div>
-</div>
-
-<div class="overlay" id="ov">
-  <div class="modal">
-    <div class="modal-head"><h2 id="m-title"></h2><button class="close" id="m-close">✕</button></div>
-    <div class="stage"><div class="stage-tag">PET</div><div id="m-stage"></div></div>
-    <div class="modal-body">
-      <div class="m-cat" id="m-cat"></div>
-      <div class="tagrow" id="m-tags"></div>
-      <div class="desc-real" id="m-desc-real"></div>
-      <button class="install" id="m-install">install</button>
+  <!-- PET OF THE DAY -->
+  <section class="potd" id="potd">
+    <div class="potd-info">
+      <div class="potd-label"><span class="dot">●</span>Pet of the day</div>
+      <div class="potd-name" id="potd-name"></div>
+      <div class="potd-desc" id="potd-desc"></div>
+      <div class="potd-meta" id="potd-meta"></div>
+      <button class="potd-install" id="potd-install">Install this pet</button>
     </div>
-  </div>
+    <div class="potd-art">
+      <div class="ring"></div><div class="ring r2"></div>
+      <img id="potd-img" alt="">
+    </div>
+  </section>
+
+  <!-- STICKY FILTERS -->
+  <nav class="stickybar">
+    <div class="filters-head">
+      <div class="searchbox">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+        <input id="q" type="text" placeholder="Search universe, style, vibe… 'pokemon', 'mecha girl', 'cozy dragon'">
+      </div>
+      <span class="resultcount" id="res">showing <b id="rc">0</b></span>
+    </div>
+    <div class="fgroup" id="f-cat"></div>
+    <div class="fgroup" id="f-univ"></div>
+    <div class="fgroup" id="f-orig"></div>
+    <div class="fgroup" id="f-style"></div>
+    <div class="fgroup" id="f-cre"></div>
+    <div class="sortrow">
+      <div class="sortbtns">
+        <button class="sbtn" id="sb-feat">Featured</button>
+        <button class="sbtn" id="sb-shuffle">Surprise me</button>
+      </div>
+      <button class="clear" id="clr">reset filters</button>
+    </div>
+  </nav>
+
+  <!-- GRID -->
+  <div class="grid" id="grid"></div>
 </div>
+
+<!-- MODAL -->
+<div class="overlay" id="ov"><div class="modal">
+  <div class="modal-head"><h2 id="m-title"></h2><button class="close" id="m-close">✕</button></div>
+  <div class="stage"><span class="stage-tag">Specimen</span><div id="m-stage"></div></div>
+  <div class="mbody">
+    <div class="m-cat" id="m-cat"></div>
+    <div class="tagrow" id="m-tags"></div>
+    <div class="m-desc-real" id="m-desc-real"></div>
+    <div class="author-line" id="m-author"></div>
+    <button class="install" id="m-install">Copy install command</button>
+    <div class="similar" id="m-sim"></div>
+  </div>
+</div></div>
+
+<div class="wrap"><footer class="footer">
+  <div class="h">Designed, not coded.</div>
+  4,824 specimens from the petdex.dev gallery · curated taxonomy · built by soyluisarca
+</footer></div>
 
 <script src="data.js"></script>
 <script>
+/* ===== state ===== */
 let sel={cat:new Set(),universe:new Set(),origin:new Set(),style:new Set(),creature:new Set()};
-let sortMode='feat'; // feat | shuffle
-let shownCount=120;
+let sortMode='feat', shownCount=140;
 const $=id=>document.getElementById(id);
+const CSSP=Object.freeze({serif:"'Fraunces',serif",sans:"'Space Grotesk'",disp:"'Syne'"});
 
+/* universe -> color (deterministic hash of tag) */
+const UNI_COLORS=['#D6FF57','#FF4D00','#FF6EC7','#6EC7FF','#FFD24D','#7CFFB2','#C792FF','#FF8F6E','#5EF2FF','#E8FF6E','#FF9E5E','#9EFF5E','#5EFFE0','#FF5EA8','#B45EFF','#6EFFD2','#FFC35E','#5E9EFF','#D2FF5E','#FF5E7C','#8EFF9E','#5EC8FF','#FF7C5E','#C35EFF','#9EFFC3','#FF5EFF','#5EFF9E','#FFB45E'];
+function uniColor(u){let h=0;for(let i=0;i<u.length;i++)h=(h*31+u.charCodeAt(i))>>>0;return UNI_COLORS[h%UNI_COLORS.length]}
+/* pet of the day: deterministic by date, among recognizable-with-universe */
+function potdPick(){const rec=PETS.filter(p=>p.universe&&p.universe.length&&p.tag==='reconocible');
+  if(!rec.length)return PETS[0];const d=new Date();const seed=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();
+  return rec[seed%rec.length]}
+
+/* ===== build filter chips ===== */
 function buildChips(){
   const opts={cat:new Set(),universe:new Set(),origin:new Set(),style:new Set(),creature:new Set()};
   PETS.forEach(p=>{if(p.cat)opts.cat.add(p.cat);(p.universe||[]).forEach(v=>opts.universe.add(v));(p.origin||[]).forEach(v=>opts.origin.add(v));(p.style||[]).forEach(v=>opts.style.add(v));(p.creature||[]).forEach(v=>opts.creature.add(v));});
+  const labels={cat:'Category',universe:'Universe',origin:'Origin',style:'Style',creature:'Type'};
   const map=[['f-cat','cat'],['f-univ','universe'],['f-orig','origin'],['f-style','style'],['f-cre','creature']];
   map.forEach(([id,k])=>{
     const el=$(id);el.innerHTML='';
+    // prefix label chip (non-interactive)
+    const lb=document.createElement('span');lb.className='chip';lb.style.cssText='border-color:transparent;background:none;color:var(--text-faint);cursor:default;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding-right:4px';lb.textContent=labels[k];
+    el.appendChild(lb);
     const vals=[...opts[k]].sort();
     vals.forEach(v=>{
-      const c=document.createElement('span');c.className='chip';c.textContent=v;
-      c.onclick=()=>{const set=sel[k];set.has(v)?set.delete(v):set.add(v);c.classList.toggle('active');shownCount=120;render();};
+      const c=document.createElement('span');c.className='chip';
+      // dot color for universe chips
+      c.innerHTML=k==='universe'?'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+uniColor(v)+';margin-right:6px;vertical-align:middle"></span>'+v:v;
+      c.onclick=()=>{const s=sel[k];s.has(v)?s.delete(v):s.add(v);c.classList.toggle('active');shownCount=140;render();};
       el.appendChild(c);
     });
   });
 }
+
+/* ===== matching ===== */
 function matches(p){
   if(sel.cat.size&&!sel.cat.has(p.cat))return false;
   if(sel.universe.size&&!(p.universe||[]).some(v=>sel.universe.has(v)))return false;
@@ -142,60 +294,82 @@ function matches(p){
   if(q){const hay=p.name+' '+p.slug+' '+(p.creature||[]).join(' ')+' '+(p.universe||[]).join(' ')+' '+(p.origin||[]).join(' ')+' '+(p.style||[]).join(' ')+' '+(p.desc||'');if(!hay.toLowerCase().includes(q))return false;}
   return true;
 }
-function currentList(){
-  let list=PETS.filter(matches);
-  if(sortMode==='feat'){
-    // reconocibles primero, luego por identity
-    list=list.slice().sort((a,b)=>(b.tag==='reconocible')-(a.tag==='reconocible')||(b.identity||0)-(a.identity||0));
-  }else if(sortMode==='shuffle'){
-    list=list.slice().sort(()=>Math.random()-0.5);
-  }
-  return list;
+function currentList(){let l=PETS.filter(matches);
+  if(sortMode==='feat')l=l.slice().sort((a,b)=>(b.tag==='reconocible')-(a.tag==='reconocible')||(b.identity||0)-(a.identity||0));
+  else if(sortMode==='shuffle')l=l.slice().sort(()=>Math.random()-.5);return l}
+
+/* ===== render ===== */
+function cardHTML(p){
+  const pix=(p.style||[]).includes('pixel');
+  const u=p.universe&&p.universe[0];
+  const uTag=u?'<span class="utag" style="background:'+uniColor(u)+'26;color:'+uniColor(u)+'">'+u+'</span>':'';
+  const art=p.art?'<img src="assets/thumbs/'+p.slug+'.webp" alt="'+p.name+'" loading="lazy"'+(pix?' class="pix"':'')+'>':'<span style="font-size:28px;color:#333">·</span>';
+  return '<div class="card" onclick="openPet(\''+p.slug+'\')" tabindex="0" role="button" onkeydown="if(event.key===\'Enter\')openPet(\''+p.slug+'\')">'
+    +'<div class="art">'+art+'</div><div class="meta"><div class="nm">'+p.name+'</div>'
+    +'<div class="row"><span class="ct">'+p.cat+'</span>'+uTag+'</div></div></div>';
 }
 function render(){
   const list=currentList();
-  const shown=list.slice(0,shownCount);
-  $('ct').textContent=PETS.length;
-  $('res').textContent=shown.length+' / '+list.length+' mascotas';
+  $('rc').textContent=list.length+' / '+PETS.length;
   const g=$('grid');
-  if(!list.length){g.innerHTML='<div class="empty">No mascotas coinciden con esos filtros.</div>';return;}
-  g.innerHTML=shown.map(p=>{
-    const uq=(p.universe||[]).slice(0,1).map(u=>'<span class="uq">'+u+'</span>').join('');
-    const isPix=(p.style||[]).includes('pixel');
-    const art='<img src="assets/thumbs/'+p.slug+'.webp" alt="'+p.name+'"'+(isPix?' class="pix"':'')+'>';
-    return '<div class="card" onclick="openPet(\''+p.slug+'\')"><div class="art">'+art+'</div><div class="nm">'+p.name+'</div><div class="ct">'+p.cat+'</div>'+uq+'</div>';
-  }).join('');
-  if(list.length>shownCount){
-    g.innerHTML+='<div class="loadmore"><button onclick="shownCount+=240;render()">Cargar más ('+(list.length-shownCount)+' restantes)</button></div>';
-  }
+  if(!list.length){g.innerHTML='<div class="empty"><div class="big">No specimens found</div>nothing in the archive matches that lens — try resetting the filters.</div>';return;}
+  const shown=list.slice(0,shownCount);
+  g.innerHTML=shown.map(cardHTML).join('');
+  if(list.length>shownCount)g.innerHTML+='<div class="loadwrap"><button class="loadbtn" onclick="shownCount+=240;render()">Load more · <span class="n">'+(list.length-shownCount)+'</span> more</button></div>';
 }
-function openPet(slug){
-  const p=PETS.find(x=>x.slug===slug);if(!p)return;
-  $('m-title').textContent=p.name;
+
+/* ===== modal ===== */
+function sims(p){return PETS.filter(x=>x.slug!==p.slug&&((x.creature||[]).some(c=>(p.creature||[]).includes(c))||(x.style||[]).some(c=>(p.style||[]).includes(c))||(x.universe||[]).some(c=>(p.universe||[]).includes(c)))).slice(0,14)}
+function openPet(slug){const p=PETS.find(x=>x.slug===slug);if(!p)return;
+  $('m-title').innerHTML=p.name.split(' ').map(w=>w).join(' ');
   $('m-cat').textContent=p.cat+(p.author?' · '+p.author:'');
   const arr=[].concat(p.universe||[],p.style||[],p.creature||[]);
   const isuni=t=>(p.universe||[]).indexOf(t)>=0;
-  $('m-tags').innerHTML=arr.map(t=>'<span class="tag '+(isuni(t)?'uni':'')+'">'+t+'</span>').join('');
-  const isPix=(p.style||[]).includes('pixel');
-  $('m-stage').innerHTML='<img src="assets/thumbs/'+p.slug+'.webp" alt="'+p.name+'"'+(isPix?' class="pix"':'')+'>';
-  $('m-desc-real').textContent=p.desc||'';
-  $('m-install').innerHTML='Copiar: hermes pets install <code>'+p.slug+'</code>';
+  $('m-tags').innerHTML=arr.map(t=>'<span class="tag '+(isuni(t)?'uni':'')+'" style="'+(isuni(t)?'border-color:'+uniColor(t)+'55;color:'+uniColor(t):'')+'">'+t+'</span>').join('')||'<span class="tag">unclassified</span>';
+  const pix=(p.style||[]).includes('pixel');
+  $('m-stage').innerHTML='<img src="assets/thumbs/'+p.slug+'.webp" alt="'+p.name+'"'+(pix?' class="pix"':'')+'>';
+  $('m-desc-real').textContent=p.desc||'No description archived for this specimen.';
+  $('m-author').textContent=p.author?('Creator: '+p.author):'';
+  $('m-install').textContent='hermes pets install '+p.slug;
   $('m-install').classList.remove('copied');
-  $('m-install').onclick=()=>{
-    const t='hermes pets install '+p.slug;
-    if(navigator.clipboard){navigator.clipboard.writeText(t).then(()=>{const o=$('m-install');o.innerHTML='✓ Copiado';o.classList.add('copied');setTimeout(()=>{o.innerHTML='Copiar: hermes pets install <code>'+p.slug+'</code>';o.classList.remove('copied')},1500);});}
-  };
+  const simEl=$('m-sim');
+  const s=sims(p);
+  simEl.innerHTML=s.length?'<h3>Related specimens</h3><div class="simrow">'+s.map(x=>{const px=(x.style||[]).includes('pixel');return '<div class="sim" onclick="openPet(\''+x.slug+'\')"><div class="sa"><img src="assets/thumbs/'+x.slug+'.webp" alt=""'+(px?' class="pix"':'')+'></div><div class="sn">'+x.name+'</div></div>'}).join('')+'</div>':'';
   $('ov').classList.add('open');
+  document.body.style.overflow='hidden';
 }
-$('m-close').onclick=()=>$('ov').classList.remove('open');
-$('ov').onclick=e=>{if(e.target.id==='ov')$('ov').classList.remove('open')};
-document.addEventListener('keydown',e=>{if(e.key==='Escape')$('ov').classList.remove('open')});
-$('q').addEventListener('input',()=>{shownCount=120;render()});
-$('sort-feat').onclick=()=>{sortMode='feat';document.getElementById('sort-shuffle').classList.remove('active');this.classList.add('active');shownCount=120;render()};
-$('sort-shuffle').onclick=()=>{sortMode='shuffle';document.getElementById('sort-feat').classList.remove('active');this.classList.add('active');shownCount=120;render()};
-$('sort-feat').classList.add('active');
-$('clr').onclick=()=>{sel={cat:new Set(),universe:new Set(),origin:new Set(),style:new Set(),creature:new Set()};$('q').value='';document.querySelectorAll('.chip.active').forEach(c=>c.classList.remove('active'));shownCount=120;render();};
-buildChips();render();
+$('m-install').onclick=()=>{const c=$('m-install');const t='hermes pets install '+c.textContent.replace('hermes pets install ','').trim();c.textContent='✓ copied';c.classList.add('copied');navigator.clipboard&&navigator.clipboard.writeText(t);setTimeout(()=>{c.textContent=t;c.classList.remove('copied')},1400)};
+function closeModal(){$('ov').classList.remove('open');document.body.style.overflow=''}
+
+/* ===== pet of the day ===== */
+function renderPotd(){const p=potdPick();$('potd-name').innerHTML=p.name.replace(/^(\S+)\s/, '$1 <em>')+(p.name.includes(' ')?'</em>':'');if(!p.name.includes(' '))$('potd-name').innerHTML=p.name+' <em>·</em>';
+  $('potd-desc').textContent=p.desc||'';const pix=(p.style||[]).includes('pixel');
+  $('potd-img').src='assets/thumbs/'+p.slug+'.webp';if(pix)$('potd-img').classList.add('pix');
+  const tags=[].concat(p.universe||[],p.style||[],p.creature||[]).slice(0,4);
+  $('potd-meta').innerHTML=tags.map(t=>'<span class="pill-mini" style="'+(p.universe&&p.universe.includes(t)?'border-color:'+uniColor(t)+'66;color:'+uniColor(t):'')+'">'+t+'</span>').join('');
+  $('potd-install').onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText('hermes pets install '+p.slug);const b=$('potd-install');b.textContent='✓ '+p.slug;setTimeout(()=>b.textContent='Install this pet',1400)};
+  $('potd-img').onclick=()=>openPet(p.slug);
+}
+
+/* ===== skeleton on first load ===== */
+function showSkel(){const g=$('grid');let s='';for(let i=0;i<18;i++)s+='<div class="s"><div class="b sq"></div><div class="b ln"></div><div class="b ln2"></div></div>';g.innerHTML='<div class="skel">'+s+'</div>'}
+
+/* ===== events ===== */
+$('m-close').onclick=closeModal;
+$('ov').onclick=e=>{if(e.target.id==='ov')closeModal()};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+$('q').addEventListener('input',()=>{shownCount=140;render()});
+$('sb-feat').onclick=()=>{sortMode='feat';$('sb-feat').classList.add('active');$('sb-shuffle').classList.remove('active');shownCount=140;render()};
+$('sb-shuffle').onclick=()=>{sortMode='shuffle';$('sb-shuffle').classList.add('active');$('sb-feat').classList.remove('active');shownCount=140;render()};
+$('sb-feat').classList.add('active');
+$('clr').onclick=()=>{sel={cat:new Set(),universe:new Set(),origin:new Set(),style:new Set(),creature:new Set()};$('q').value='';document.querySelectorAll('.chip.active').forEach(c=>c.classList.remove('active'));shownCount=140;render()};
+
+/* custom cursor */
+(function(){const cur=$('cur');if(window.matchMedia('(hover:hover) and (pointer:fine)').matches){let x=0,y=0,tx=0,ty=0;document.addEventListener('mousemove',e=>{x=e.clientX;y=e.clientY;cur.style.opacity=1});(function loop(){tx+=(x-tx)*.25;ty+=(y-ty)*.25;cur.style.left=tx+'px';cur.style.top=ty+'px';requestAnimationFrame(loop)})();document.querySelectorAll('.card,.chip,button').forEach(el=>{el.addEventListener('mouseenter',()=>{cur.style.width='22px';cur.style.height='22px';cur.style.opacity=.5});el.addEventListener('mouseleave',()=>{cur.style.width='9px';cur.style.height='9px';cur.style.opacity=1})})}})();
+
+/* boot */
+showSkel();renderPotd();
+setTimeout(()=>{buildChips();render()},50);
 </script>
 </body>
 </html>
