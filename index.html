@@ -76,15 +76,20 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:2000;o
 .searchbox input::placeholder{color:var(--text-faint)}
 .resultcount{font-family:var(--display);font-size:12px;color:var(--text-dim);white-space:nowrap}
 .resultcount b{color:var(--lime)}
-/* filter groups: compact single scrolling row per axis */
-.filterbands{display:flex;flex-direction:column;gap:6px;margin-top:8px}
-.fgroup{display:flex;align-items:center;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
-.fgroup::-webkit-scrollbar{height:4px}
-.fgroup::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:4px}
-.fgroup .flabel{font-family:var(--display);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-faint);flex-shrink:0;padding-right:4px}
+/* filter groups: collapsible per axis via + toggle */
+.filterbands{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.fband{display:flex;flex-direction:column;gap:6px;border:1px solid var(--border);border-radius:14px;padding:5px 5px 5px 10px;background:rgba(255,255,255,.015)}
+.fband-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.fband-toggle .flabel{font-family:var(--display);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);white-space:nowrap}
+.fband-toggle .plus{width:22px;height:22px;border-radius:50%;border:1px solid var(--border-hi);display:flex;align-items:center;justify-content:center;color:var(--lime);font-size:15px;font-weight:600;transition:transform .25s cubic-bezier(.2,.8,.2,1),background .2s;flex-shrink:0;line-height:1}
+.fband-toggle:hover .plus{background:rgba(214,255,87,.1);border-color:var(--lime)}
+.fband.open .plus{transform:rotate(45deg);background:var(--lime);color:#000;border-color:var(--lime)}
+.fgroup{display:none;flex-wrap:wrap;gap:6px;padding:2px 2px 2px 0;max-width:640px}
+.fband.open .fgroup{display:flex;animation:fadein .2s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}
 .chip{font-family:var(--display);font-size:11px;letter-spacing:.2px;padding:5px 12px;border-radius:100px;
   border:1px solid var(--border);background:rgba(255,255,255,.02);color:var(--text-dim);cursor:pointer;
-  transition:all .18s cubic-bezier(.2,.8,.2,1);user-select:none;white-space:nowrap;flex-shrink:0}
+  transition:all .18s cubic-bezier(.2,.8,.2,1);user-select:none;white-space:nowrap}
 .chip:hover{border-color:var(--border-hi);color:var(--text);transform:translateY(-1px)}
 .chip.active{background:var(--lime);border-color:var(--lime);color:#000;font-weight:600;transform:scale(1.03)}
 .sortrow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px;flex-wrap:wrap}
@@ -212,13 +217,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:2000;o
       </div>
       <span class="resultcount" id="res">showing <b id="rc">0</b></span>
     </div>
-    <div class="filterbands">
-      <div class="fgroup" id="f-cat"></div>
-      <div class="fgroup" id="f-univ"></div>
-      <div class="fgroup" id="f-orig"></div>
-      <div class="fgroup" id="f-style"></div>
-      <div class="fgroup" id="f-cre"></div>
-    </div>
+    <div class="filterbands" id="bands"></div>
     <div class="sortrow">
       <div class="sortbtns">
         <button class="sbtn" id="sb-feat">Featured</button>
@@ -272,20 +271,33 @@ function buildChips(){
   const opts={cat:new Set(),universe:new Set(),origin:new Set(),style:new Set(),creature:new Set()};
   PETS.forEach(p=>{if(p.cat)opts.cat.add(p.cat);(p.universe||[]).forEach(v=>opts.universe.add(v));(p.origin||[]).forEach(v=>opts.origin.add(v));(p.style||[]).forEach(v=>opts.style.add(v));(p.creature||[]).forEach(v=>opts.creature.add(v));});
   const labels={cat:'Category',universe:'Universe',origin:'Origin',style:'Style',creature:'Type'};
-  const map=[['f-cat','cat'],['f-univ','universe'],['f-orig','origin'],['f-style','style'],['f-cre','creature']];
-  map.forEach(([id,k])=>{
-    const el=$(id);el.innerHTML='';
-    // prefix label (non-interactive, flex-shrink:0)
-    const lb=document.createElement('span');lb.className='flabel';lb.textContent=labels[k];
-    el.appendChild(lb);
+  const order=[['cat',0],['universe',0],['origin',0],['style',0],['creature',0]];
+  const bands=$('bands');bands.innerHTML='';
+  order.forEach(([k])=>{
+    const band=document.createElement('div');band.className='fband';
+    // toggle
+    const tog=document.createElement('div');tog.className='fband-toggle';
+    const lbl=document.createElement('span');lbl.className='flabel';lbl.textContent=labels[k];
+    const plus=document.createElement('span');plus.className='plus';plus.textContent='+';
+    tog.appendChild(lbl);tog.appendChild(plus);
+    // chips container
+    const grp=document.createElement('div');grp.className='fgroup';
     const vals=[...opts[k]].sort();
     vals.forEach(v=>{
       const c=document.createElement('span');c.className='chip';
-      // dot color for universe chips
       c.innerHTML=k==='universe'?'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+uniColor(v)+';margin-right:6px;vertical-align:middle"></span>'+v:v;
       c.onclick=()=>{const s=sel[k];s.has(v)?s.delete(v):s.add(v);c.classList.toggle('active');shownCount=140;render();};
-      el.appendChild(c);
+      grp.appendChild(c);
     });
+    tog.onclick=()=>band.classList.toggle('open');
+    band.appendChild(tog);band.appendChild(grp);
+    bands.appendChild(band);
+  });
+  // count badges in labels
+  bands.querySelectorAll('.fband').forEach(band=>{
+    const lbl=band.querySelector('.flabel');
+    const n=band.querySelectorAll('.chip').length;
+    lbl.textContent=lbl.textContent+' · '+n;
   });
 }
 
@@ -375,7 +387,7 @@ $('clr').onclick=()=>{sel={cat:new Set(),universe:new Set(),origin:new Set(),sty
 
 /* boot */
 showSkel();renderPotd();
-setTimeout(()=>{buildChips();render()},50);
+(function init(){ if(typeof PETS!=='undefined'&&PETS.length){buildChips();render();} else setTimeout(init,100); })();
 </script>
 </body>
 </html>
