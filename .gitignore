@@ -1,0 +1,8 @@
+# Archivos de trabajo interno (no van al repo público)
+*.json
+!data.js
+*.log
+
+# Sistema
+.DS_Store
+Thumbs.db
