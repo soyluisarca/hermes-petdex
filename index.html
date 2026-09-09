@@ -41,29 +41,6 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:2000;o
 .sub{margin-top:26px;max-width:560px;color:var(--text-dim);font-size:17px;line-height:1.6}
 .sub b{color:var(--text);font-weight:500}
 
-/* ============ PET OF THE DAY hero ============ */
-.potd{margin:36px 0 26px;background:linear-gradient(135deg,#151519,#101013);border:1px solid var(--border);
-  border-radius:24px;overflow:hidden;position:relative;min-height:320px;display:flex}
-.potd::before{content:"";position:absolute;inset:0;
-  background:radial-gradient(600px 300px at 85% 20%,rgba(214,255,87,.07),transparent 60%);
-  pointer-events:none}
-.potd-info{padding:42px 40px;flex:1;display:flex;flex-direction:column;justify-content:center;z-index:1}
-.potd-label{font-family:var(--display);font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--text-faint);margin-bottom:14px}
-.potd-label .dot{color:var(--lime);margin-right:8px}
-.potd-name{font-family:var(--serif);font-size:clamp(34px,5vw,56px);line-height:1.02;font-weight:500}
-.potd-name em{color:var(--lime);font-style:italic}
-.potd-desc{margin-top:14px;color:var(--text-dim);font-size:15px;line-height:1.6;max-width:520px}
-.potd-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
-.pill-mini{font-family:var(--display);font-size:11px;padding:5px 12px;border-radius:100px;border:1px solid var(--border);color:var(--text-dim);letter-spacing:.5px}
-.potd-art{width:340px;min-height:320px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
-.potd-art img{width:230px;height:230px;object-fit:contain;filter:drop-shadow(0 0 40px rgba(214,255,87,.25));z-index:1}
-.potd-art .ring{position:absolute;width:290px;height:290px;border-radius:50%;border:1px solid var(--border-hi)}
-.potd-art .ring.r2{width:350px;height:350px;opacity:.5}
-.potd-install{margin-top:22px;align-self:flex-start;display:inline-flex;align-items:center;gap:10px;
-  background:var(--lime);color:#000;font-weight:600;border:none;padding:12px 22px;border-radius:12px;
-  font-size:14px;cursor:pointer;transition:.2s}
-.potd-install:hover{transform:translateY(-2px);box-shadow:0 10px 30px -8px rgba(214,255,87,.5)}
-
 /* ============ STICKY FILTER BAR ============ */
 .stickybar{position:sticky;top:0;z-index:100;padding:10px 0;backdrop-filter:blur(20px) saturate(1.4);
   -webkit-backdrop-filter:blur(20px);background:rgba(10,10,11,.85);border-bottom:1px solid rgba(255,255,255,.04);margin:0 -26px;padding-left:26px;padding-right:26px}
@@ -179,7 +156,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:2000;o
 .cursor{position:fixed;width:9px;height:9px;border-radius:50%;background:var(--lime);pointer-events:none;z-index:3000;
   transform:translate(-50%,-50%);transition:width .15s,height .15s,opacity .15s;opacity:0;mix-blend-mode:difference}
 @media (hover:hover) and (pointer:fine){.cursor{display:block}}
-@media (max-width:760px){.potd{flex-direction:column}.potd-art{width:100%;min-height:200px}.title{font-size:56px}.potd-art img{width:160px;height:160px}}
+@media (max-width:760px){.title{font-size:56px}}
 </style>
 </head>
 <body>
@@ -192,21 +169,6 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:2000;o
     <h1 class="title">Hermes <em>Petdex</em></h1>
     <p class="sub">A museum of <b>4,824 animated pets</b> for Hermes Agent. Not a dump — a <b>semantic archive</b>: find by universe, style and type. Explore, compare, install in one click.</p>
   </header>
-
-  <!-- PET OF THE DAY -->
-  <section class="potd" id="potd">
-    <div class="potd-info">
-      <div class="potd-label"><span class="dot">●</span>Pet of the day</div>
-      <div class="potd-name" id="potd-name"></div>
-      <div class="potd-desc" id="potd-desc"></div>
-      <div class="potd-meta" id="potd-meta"></div>
-      <button class="potd-install" id="potd-install">Install this pet</button>
-    </div>
-    <div class="potd-art">
-      <div class="ring"></div><div class="ring r2"></div>
-      <img id="potd-img" alt="">
-    </div>
-  </section>
 
   <!-- STICKY FILTERS -->
   <nav class="stickybar">
@@ -261,10 +223,6 @@ const CSSP=Object.freeze({serif:"'Fraunces',serif",sans:"'Space Grotesk'",disp:"
 /* universe -> color (deterministic hash of tag) */
 const UNI_COLORS=['#D6FF57','#FF4D00','#FF6EC7','#6EC7FF','#FFD24D','#7CFFB2','#C792FF','#FF8F6E','#5EF2FF','#E8FF6E','#FF9E5E','#9EFF5E','#5EFFE0','#FF5EA8','#B45EFF','#6EFFD2','#FFC35E','#5E9EFF','#D2FF5E','#FF5E7C','#8EFF9E','#5EC8FF','#FF7C5E','#C35EFF','#9EFFC3','#FF5EFF','#5EFF9E','#FFB45E'];
 function uniColor(u){let h=0;for(let i=0;i<u.length;i++)h=(h*31+u.charCodeAt(i))>>>0;return UNI_COLORS[h%UNI_COLORS.length]}
-/* pet of the day: deterministic by date, among recognizable-with-universe */
-function potdPick(){const rec=PETS.filter(p=>p.universe&&p.universe.length&&p.tag==='reconocible');
-  if(!rec.length)return PETS[0];const d=new Date();const seed=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();
-  return rec[seed%rec.length]}
 
 /* ===== build filter chips ===== */
 function buildChips(){
@@ -359,15 +317,6 @@ function openPet(slug){const p=PETS.find(x=>x.slug===slug);if(!p)return;
 $('m-install').onclick=()=>{const c=$('m-install');const t='hermes pets install '+c.textContent.replace('hermes pets install ','').trim();c.textContent='✓ copied';c.classList.add('copied');navigator.clipboard&&navigator.clipboard.writeText(t);setTimeout(()=>{c.textContent=t;c.classList.remove('copied')},1400)};
 function closeModal(){$('ov').classList.remove('open');document.body.style.overflow=''}
 
-/* ===== pet of the day ===== */
-function renderPotd(){const p=potdPick();$('potd-name').innerHTML=p.name.replace(/^(\S+)\s/, '$1 <em>')+(p.name.includes(' ')?'</em>':'');if(!p.name.includes(' '))$('potd-name').innerHTML=p.name+' <em>·</em>';
-  $('potd-desc').textContent=p.desc||'';const pix=(p.style||[]).includes('pixel');
-  $('potd-img').src='assets/thumbs/'+p.slug+'.webp';if(pix)$('potd-img').classList.add('pix');
-  const tags=[].concat(p.universe||[],p.style||[],p.creature||[]).slice(0,4);
-  $('potd-meta').innerHTML=tags.map(t=>'<span class="pill-mini" style="'+(p.universe&&p.universe.includes(t)?'border-color:'+uniColor(t)+'66;color:'+uniColor(t):'')+'">'+t+'</span>').join('');
-  $('potd-install').onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText('hermes pets install '+p.slug);const b=$('potd-install');b.textContent='✓ '+p.slug;setTimeout(()=>b.textContent='Install this pet',1400)};
-  $('potd-img').onclick=()=>openPet(p.slug);
-}
 
 /* ===== skeleton on first load ===== */
 function showSkel(){const g=$('grid');let s='';for(let i=0;i<18;i++)s+='<div class="s"><div class="b sq"></div><div class="b ln"></div><div class="b ln2"></div></div>';g.innerHTML='<div class="skel">'+s+'</div>'}
@@ -386,7 +335,7 @@ $('clr').onclick=()=>{sel={cat:new Set(),universe:new Set(),origin:new Set(),sty
 (function(){const cur=$('cur');if(window.matchMedia('(hover:hover) and (pointer:fine)').matches){let x=0,y=0,tx=0,ty=0;document.addEventListener('mousemove',e=>{x=e.clientX;y=e.clientY;cur.style.opacity=1});(function loop(){tx+=(x-tx)*.25;ty+=(y-ty)*.25;cur.style.left=tx+'px';cur.style.top=ty+'px';requestAnimationFrame(loop)})();document.querySelectorAll('.card,.chip,button').forEach(el=>{el.addEventListener('mouseenter',()=>{cur.style.width='22px';cur.style.height='22px';cur.style.opacity=.5});el.addEventListener('mouseleave',()=>{cur.style.width='9px';cur.style.height='9px';cur.style.opacity=1})})}})();
 
 /* boot */
-showSkel();renderPotd();
+showSkel();
 (function init(){ if(typeof PETS!=='undefined'&&PETS.length){buildChips();render();} else setTimeout(init,100); })();
 </script>
 </body>
